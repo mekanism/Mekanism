@@ -18,6 +18,8 @@ import net.neoforged.neoforge.fluids.FluidType;
 
 public class GeneratorsConfig extends BaseMekanismConfig {
 
+    public static final int DEFAULT_BLADES_PER_COIL = 4;
+    public static final int DEFAULT_ENERGY_PER_TURBINE_COIL = Math.toIntExact(Math.round(Math.ceil(1000.0 / ((double) TurbineValidator.MAX_BLADES / DEFAULT_BLADES_PER_COIL))));//total max of 1000ish for max number of (default) coils.
     private final ModConfigSpec configSpec;
 
     public final CachedIntValue advancedSolarGeneration;
@@ -41,8 +43,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedLongValue turbineEnergyCapacityPerVolume;
     public final CachedLongValue turbineChemicalPerTank;
     public final CachedIntValue condenserRate;
-    public final CachedIntValue turbineEnergyPerSteam;
-    public final CachedIntValue turbineSteamDivisor;
+    public final CachedIntValue turbineEnergyPerCoil;
 
     public final CachedIntValue energyPerFusionFuel;
     public final CachedIntValue windGenerationMin;
@@ -138,7 +139,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
 
         GeneratorsConfigTranslations.SERVER_TURBINE.applyToBuilder(builder).push("turbine");
         turbineBladesPerCoil = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_BLADES.applyToBuilder(builder)
-              .defineInRange("bladesPerCoil", 4, 1, 12));
+              .defineInRange("bladesPerCoil", DEFAULT_BLADES_PER_COIL, 1, 12));
         turbineVentChemicalFlow = CachedDoubleValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_RATE_VENT.applyToBuilder(builder)
               .defineInRange("ventChemicalFlow", 32D * FluidType.BUCKET_VOLUME, 0.1, 1_024 * FluidType.BUCKET_VOLUME));
         turbineDisperserChemicalFlow = CachedDoubleValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_RATE_DISPERSER.applyToBuilder(builder)
@@ -151,11 +152,8 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         int maxTurbine = TurbineValidator.MAX_BASE * TurbineValidator.MAX_BASE * CuboidStructureValidator.MAX_SIZE;
         turbineChemicalPerTank = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_CHEMICAL_CAPACITY.applyToBuilder(builder)
               .defineInRange("chemicalPerTank", 64L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxTurbine));
-        turbineEnergyPerSteam = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_ENERGY_PER_STEAM.applyToBuilder(builder)
-              .defineInRange("energyPerSteam", 5, 0, Integer.MAX_VALUE));
-        turbineSteamDivisor = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_STEAM_DIVISOR.applyToBuilder(builder)
-              .defineInRange("steamDivisor", 100, 1, Integer.MAX_VALUE));
-        builder.pop();
+        turbineEnergyPerCoil = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_TURBINE_ENERGY_PER_COIL.applyToBuilder(builder)
+              .defineInRange("energyPerCoil", DEFAULT_ENERGY_PER_TURBINE_COIL, 0, Integer.MAX_VALUE));
 
         GeneratorsConfigTranslations.SERVER_FISSION.applyToBuilder(builder).push("fission_reactor");
         energyPerFissionFuel = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_FISSION_FUEL_ENERGY.applyToBuilder(builder)

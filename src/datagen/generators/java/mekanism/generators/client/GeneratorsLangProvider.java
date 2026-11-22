@@ -201,7 +201,8 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.TURBINE_CAPACITY, "Capacity: %1$s mB");
         add(GeneratorsLang.TURBINE_COILS, "Coils: %1$s %2$s");
         add(GeneratorsLang.TURBINE_DISPERSERS, "Dispersers: %1$s %2$s");
-        add(GeneratorsLang.TURBINE_FLOW_RATE, "Flow rate: %1$s mB/t");
+        add(GeneratorsLang.TURBINE_FLOW_RATE, "Flow rate: %1$s mB/t (%2$s%%)");
+        add(GeneratorsLang.TURBINE_FLOW_RATIO_REQUIRED, "Min ratio needed: %1$s%%");
         add(GeneratorsLang.TURBINE_MAX_FLOW, "Max flow: %1$s mB/t");
         add(GeneratorsLang.TURBINE_MAX_PRODUCTION, "Max Production: %1$s");
         add(GeneratorsLang.TURBINE_STATS, "Turbine Statistics");

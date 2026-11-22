@@ -54,7 +54,7 @@ public class RenderIndustrialTurbine extends MultiblockTileEntityRenderer<Turbin
                 if (rotor.getHousedBlades() > 0) {
                     if (tickingNormally) {
                         int baseIndex = rotor.getPosition() * 2;
-                        float rotateSpeed = multiblock.clientRotation * RenderTurbineRotor.BASE_SPEED;
+                        float rotateSpeed = multiblock.clientFlowRatio * RenderTurbineRotor.BASE_SPEED;
                         rotor.rotationLower += rotateSpeed / (baseIndex + 1);
                         rotor.rotationUpper += rotateSpeed / (baseIndex + 2);
                         rotor.rotationLower %= 360;

@@ -44,7 +44,9 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
             TurbineMultiblockData multiblock = tile.getMultiblock();
             if (multiblock.isFormed()) {
                 list.add(GeneratorsLang.TURBINE_PRODUCTION_AMOUNT.translate(energyDisplayOf(multiblock.getProductionRate())));
-                list.add(GeneratorsLang.TURBINE_FLOW_RATE.translate(TextUtils.format(multiblock.clientFlow)));
+                //todo give the percentages a decimal point, or remove the 0.5 extra
+                list.add(GeneratorsLang.TURBINE_FLOW_RATE.translate(TextUtils.format(multiblock.clientFlow), TextUtils.format(multiblock.clientFlowRatio * 100)));
+                list.add(GeneratorsLang.TURBINE_FLOW_RATIO_REQUIRED.translate(TextUtils.format(multiblock.minFlowRateForSpin * 100)));
                 list.add(GeneratorsLang.TURBINE_CAPACITY.translate(TextUtils.format(multiblock.getSteamCapacity())));
                 list.add(GeneratorsLang.TURBINE_MAX_FLOW.translate(TextUtils.format(multiblock.getMaxFlowRate())));
             }

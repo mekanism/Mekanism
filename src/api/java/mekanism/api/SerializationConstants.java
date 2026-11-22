@@ -76,6 +76,7 @@ public final class SerializationConstants {
     public static final String COMPLEX = "complex";
     public static final String CURRENT_ACCEPTORS = "acceptors";
     public static final String CURRENT_CONNECTIONS = "connections";
+    public static final String FLOW_RATIO = "flow_ratio";
     public static final String HAS_STRUCTURE = "has_structure";
     public static final String HEIGHT = "height";
     public static final String INVENTORY_ID = "inventory_id";

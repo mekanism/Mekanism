@@ -48,7 +48,10 @@ import org.jspecify.annotations.Nullable;
 
 public class TurbineMultiblockData extends MultiblockData {
 
-    public static final float ROTATION_THRESHOLD = 0.001F;
+    public static final float FLOW_RATIO_UPDATE_THRESHOLD = 0.001F;
+    //todo configs? and better names
+    private static final double MIN_FLOW_ROTATION_RATIO = 0.1;//min 10% for spinny spinny
+    private static final double EXTRA_RATIO_PER_BLADE = 0.015;//extra 1.5% per blade (ignore shafts with no blades for now)
 
     private final List<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> fluidOutputTargets = new ArrayList<>();
     private final List<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> energyOutputTargets = new ArrayList<>();
@@ -64,6 +67,8 @@ public class TurbineMultiblockData extends MultiblockData {
 
     @ContainerSync
     private int blades;
+    @ContainerSync
+    public double minFlowRateForSpin;
     @ContainerSync
     @SyntheticComputerMethod(getter = "getVents")
     public int vents;
@@ -89,7 +94,8 @@ public class TurbineMultiblockData extends MultiblockData {
     @SyntheticComputerMethod(getter = "getFlowRate")
     public int clientFlow;
 
-    public float clientRotation;
+    @ContainerSync
+    public float clientFlowRatio;
     public float prevSteamScale;
 
     public TurbineMultiblockData(TileEntityTurbineCasing tile) {
@@ -106,7 +112,11 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     public void setBlades(int value) {
+        if (value < 0) {
+            throw new IllegalArgumentException("value must be positive: " + value);
+        }
         blades = value;
+        minFlowRateForSpin = MIN_FLOW_ROTATION_RATIO + value * EXTRA_RATIO_PER_BLADE;
     }
 
     @Override
@@ -144,16 +154,19 @@ public class TurbineMultiblockData extends MultiblockData {
             try (Transaction transaction = Transaction.openRoot()) {
                 double steamFilledRatio = stored / (double) chemicalTank.capacityAsLong(chemicalTank.resource());
                 double maxFlowRate = getMaxFlowRateDouble();
-                double rate = Math.min(stored, maxFlowRate) * steamFilledRatio;
-                if (rate >= 1) {
-                    flow = MathUtils.clampToInt(rate);
+                double mbToProcess = Math.min(stored, maxFlowRate) * steamFilledRatio;
+                if (mbToProcess >= 1) {
+                    flow = MathUtils.clampToInt(mbToProcess);
                     if (chemicalTank.extract(chemicalTank.resource(), flow, transaction, AutomationType.INTERNAL) == flow) {
-                        int energyProduced = MathUtils.clampToInt(rate * getEnergyMultiplier());
-                        if (energyProduced > 0) {
-                            //Insert energy allowing any excess to be voided/discharged into the world
-                            energyContainer.insert(energyProduced, transaction, AutomationType.INTERNAL);
+                        flowRatio = mbToProcess / maxFlowRate;
+                        if (flowRatio >= minFlowRateForSpin) {
+                            int maxEnergy = getMaxProduction();
+                            int energyProduced = MathUtils.clampToInt(maxEnergy * flowRatio);
+                            if (energyProduced > 0) {
+                                //Insert energy allowing any excess to be voided/discharged into the world
+                                energyContainer.insert(energyProduced, transaction, AutomationType.INTERNAL);
+                            }
                         }
-                        flowRatio = rate / maxFlowRate;
                         int waterProduced = Math.min(flow, getMaxWaterOutput());
                         if (ventTank.insert(FluidResource.of(Fluids.WATER), waterProduced, transaction, AutomationType.INTERNAL) == waterProduced) {
                             //This should always return true
@@ -173,10 +186,11 @@ public class TurbineMultiblockData extends MultiblockData {
         }
         EnergyUtils.emit(energyOutputTargets, energyContainer, null);
 
-        float newRotation = (float) flowRatio;
+        //Only update rotation if it's enough for spinning, else reset to 0
+        float newRotation = flowRatio > minFlowRateForSpin ? (float) flowRatio : 0;
 
-        if (Math.abs(newRotation - clientRotation) > ROTATION_THRESHOLD) {
-            clientRotation = newRotation;
+        if (Math.abs(newRotation - clientFlowRatio) > FLOW_RATIO_UPDATE_THRESHOLD) {
+            clientFlowRatio = newRotation;
             needsPacket = true;
         }
         float scale = MekanismUtils.getScale(prevSteamScale, chemicalTank);
@@ -197,10 +211,8 @@ public class TurbineMultiblockData extends MultiblockData {
         return Math.min(rate, vents * MekanismGeneratorsConfig.generators.turbineVentChemicalFlow.get());
     }
 
-    private double getEnergyMultiplier() {
-        double baseMultiplier = ((double) MekanismGeneratorsConfig.generators.turbineEnergyPerSteam.get() / TurbineValidator.MAX_BLADES)
-                                * Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
-        return baseMultiplier / MekanismGeneratorsConfig.generators.turbineSteamDivisor.getAsInt();
+    public int getUsableCoils() {
+        return Math.min(coils, TurbineValidator.MAX_BLADES / MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
     }
 
     @Override
@@ -212,7 +224,7 @@ public class TurbineMultiblockData extends MultiblockData {
         ValueUtils.readOrEmpty(input, SerializationConstants.CHEMICAL, chemicalTank);
         ValueUtils.readOrEmpty(input, SerializationConstants.FLUID, ventTank);
         complex = input.read(SerializationConstants.COMPLEX, BlockPos.CODEC).orElse(null);
-        clientRotation = input.getFloatOr(SerializationConstants.ROTATION, 0);
+        clientFlowRatio = input.getFloatOr(SerializationConstants.FLOW_RATIO, 0);
     }
 
     @Override
@@ -226,7 +238,7 @@ public class TurbineMultiblockData extends MultiblockData {
         if (complex != null) {
             output.store(SerializationConstants.COMPLEX, BlockPos.CODEC, complex);
         }
-        output.putFloat(SerializationConstants.ROTATION, clientRotation);
+        output.putFloat(SerializationConstants.FLOW_RATIO, clientFlowRatio);
     }
 
     @ComputerMethod
@@ -257,12 +269,12 @@ public class TurbineMultiblockData extends MultiblockData {
 
     @ComputerMethod
     public int getProductionRate() {
-        return MathUtils.clampToInt(getEnergyMultiplier() * clientFlow);
+        return MathUtils.clampToInt(getMaxProduction() * clientFlowRatio);
     }
 
     @ComputerMethod
     public int getMaxProduction() {
-        return MathUtils.clampToInt(getEnergyMultiplier() * getMaxFlowRateDouble());
+        return MathUtils.multiplyClamped(getUsableCoils(), MekanismGeneratorsConfig.generators.turbineEnergyPerCoil.get());
     }
 
     @ComputerMethod

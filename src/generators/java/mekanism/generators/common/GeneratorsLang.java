@@ -65,6 +65,7 @@ public enum GeneratorsLang implements ILangEntry {
 
     TURBINE("turbine", "industrial_turbine"),
     TURBINE_FLOW_RATE("turbine", "flow_rate"),
+    TURBINE_FLOW_RATIO_REQUIRED("turbine", "flow_ratio_required"),
     TURBINE_STEAM_INPUT_RATE("turbine", "steam_input"),
     TURBINE_CAPACITY("turbine", "capacity"),
     TURBINE_PRODUCTION_AMOUNT("turbine", "production_amount"),

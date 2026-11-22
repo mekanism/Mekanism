@@ -3,6 +3,7 @@ package mekanism.generators.common.config;
 import mekanism.common.config.IConfigTranslation;
 import mekanism.common.config.TranslationPreset;
 import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.content.turbine.TurbineValidator;
 import org.jspecify.annotations.Nullable;
 
 public enum GeneratorsConfigTranslations implements IConfigTranslation {
@@ -54,8 +55,7 @@ public enum GeneratorsConfigTranslations implements IConfigTranslation {
           "Amount of energy in FE that each block of the turbine contributes to the total energy capacity. Max = volume * energyCapacityPerVolume"),
     SERVER_TURBINE_CHEMICAL_CAPACITY("server.turbine.capacity.chemical", "Chemical Per Tank",
           "Amount of chemical (mB) that each block of the turbine's steam cavity contributes to the volume. Max = volume * chemicalPerTank"),
-    SERVER_TURBINE_ENERGY_PER_STEAM("server.turbine.energy_conversion.steam", "Energy Per Steam", "Maximum Energy per tick generated per Steam unit in the Industrial Turbine."),
-    SERVER_TURBINE_STEAM_DIVISOR("server.turbine.energy_conversion.steam_divisor", "Steam Divisor", "Divisor for Steam rate to create a Steam unit. The Steam flow will be divided by this amount and then multiplied by the Energy Per Steam amount to calculate the generation rate."),
+    SERVER_TURBINE_ENERGY_PER_COIL("server.turbine.energy_conversion.per_coil", "Energy Per Coil", "Maximum Energy per tick generated per Electromagnetic Coil (up to " + TurbineValidator.MAX_BLADES + " / Blades Per Coil)."),
 
     SERVER_FISSION("server.fission", "Fission Reactor", "Settings for configuring Fission Reactors", "Edit Reactor Settings"),
     SERVER_FISSION_FUEL_ENERGY("server.fission.fuel_energy", "Energy Per Fissile Fuel",
