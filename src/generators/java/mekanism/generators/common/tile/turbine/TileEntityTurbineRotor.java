@@ -100,7 +100,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
                 if (hasFormedMultiblock() && getMultiblock() instanceof TurbineMultiblockData multiblock) {
                     //If for some reason someone is modifying the number of blades on a running turbine (which is unsupported),
                     // update the turbine's blade count as best we can
-                    multiblock.blades++;
+                    multiblock.setBlades(multiblock.blades() + 1);
                 }
                 // Update client state
                 sendUpdatePacket();
@@ -125,7 +125,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
             if (hasFormedMultiblock() && getMultiblock() instanceof TurbineMultiblockData multiblock) {
                 //If for some reason someone is modifying the number of blades on a running turbine (which is unsupported),
                 // update the turbine's blade count as best we can
-                multiblock.blades--;
+                multiblock.setBlades(multiblock.blades() - 1);
             }
 
             // Update client state

@@ -63,8 +63,7 @@ public class TurbineMultiblockData extends MultiblockData {
     private long energyCapacity = 0;
 
     @ContainerSync
-    @SyntheticComputerMethod(getter = "getBlades")
-    public int blades;
+    private int blades;
     @ContainerSync
     @SyntheticComputerMethod(getter = "getVents")
     public int vents;
@@ -99,6 +98,15 @@ public class TurbineMultiblockData extends MultiblockData {
         fluidTanks.add(ventTank = VariableCapacityFluidTank.output(this, () -> isFormed() ? (long) condensers * MekanismGeneratorsConfig.generators.condenserRate.get() : FluidType.BUCKET_VOLUME,
               fluid -> fluid.is(FluidTags.WATER), this));
         energyContainer = VariableCapacityEnergyContainer.create(this::getEnergyCapacity, _ -> isFormed(), automationType -> automationType.isInternal() && isFormed(), this);
+    }
+
+    @ComputerMethod(nameOverride = "getBlades")
+    public int blades() {
+        return blades;
+    }
+
+    public void setBlades(int value) {
+        blades = value;
     }
 
     @Override

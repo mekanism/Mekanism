@@ -173,7 +173,7 @@ public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblock
         }
 
         // Update the structure with number of blades found on rotors
-        structure.blades = blades;
+        structure.setBlades(blades);
 
         //Explore short circuits if the start position is not valid
         structure.coils = FormationProtocol.explore(world, chunkMap, complex.relative(Direction.UP), null,
