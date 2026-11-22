@@ -1096,7 +1096,7 @@
   "configuration.mekanism.gear.meka_tool.energy_usage.silk": "Silk Touch",
   "configuration.mekanism.gear.meka_tool.energy_usage.silk.tooltip": "Additional energy used when mining with Silk touch with the Meka-Tool.",
   "configuration.mekanism.gear.meka_tool.energy_usage.slow.chance": "Slow Energy Chance",
-  "configuration.mekanism.gear.meka_tool.energy_usage.slow.chance.tooltip": "Chance of the Atomic Disassembler using the base energy usage when set to 'Slow' mode.",
+  "configuration.mekanism.gear.meka_tool.energy_usage.slow.chance.tooltip": "Chance of the Meka-Tool using the base energy usage when set to 'Slow' mode.",
   "configuration.mekanism.gear.meka_tool.energy_usage.super_fast": "Super Fast",
   "configuration.mekanism.gear.meka_tool.energy_usage.super_fast.tooltip": "Energy usage of the Meka-Tool when set to 'Super Fast' excavation speed.",
   "configuration.mekanism.gear.meka_tool.energy_usage.teleport": "Teleport Energy Usage",

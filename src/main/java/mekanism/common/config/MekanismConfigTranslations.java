@@ -430,7 +430,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
 
     GEAR_MEKA_TOOL_ENERGY_USAGE("gear.meka_tool.energy_usage", "Energy Usage", "Settings for configuring the Meka-Tool's Energy Usage", true),
     GEAR_MEKA_TOOL_ENERGY_USAGE_SLOW_CHANCE("gear.meka_tool.energy_usage.slow.chance", "Slow Energy Chance",
-          "Chance of the Atomic Disassembler using the base energy usage when set to 'Slow' mode."),
+          "Chance of the Meka-Tool using the base energy usage when set to 'Slow' mode."),
     GEAR_MEKA_TOOL_ENERGY_USAGE_NORMAL("gear.meka_tool.energy_usage.normal", "Normal", "Energy usage of the Meka-Tool."),
     GEAR_MEKA_TOOL_ENERGY_USAGE_FAST("gear.meka_tool.energy_usage.fast", "Fast", "Energy usage of the Meka-Tool when set to 'Fast' excavation speed."),
     GEAR_MEKA_TOOL_ENERGY_USAGE_SUPER_FAST("gear.meka_tool.energy_usage.super_fast", "Super Fast", "Energy usage of the Meka-Tool when set to 'Super Fast' excavation speed."),
