@@ -446,6 +446,7 @@ public class MekanismBlockTypes {
     // Laser Amplifier
     public static final BlockTypeTile<TileEntityLaserAmplifier> LASER_AMPLIFIER = BlockTileBuilder.createBlock(() -> MekanismTileEntityTypes.LASER_AMPLIFIER, MekanismLang.DESCRIPTION_LASER_AMPLIFIER)
           .withGui(() -> MekanismContainerTypes.LASER_AMPLIFIER)
+          .withEnergyStorage(MekanismConfig.storage.laserAmplifier)
           .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), Attributes.REDSTONE, Attributes.COMPARATOR, Attributes.SECURITY)
           .with(new AttributeRedstoneEmitter<>((tile, _) -> tile.getRedstoneLevel(), (state, direction) -> direction != null && direction.getOpposite() != Attribute.getFacing(state)))
           .withCustomShape(BlockShapes.LASER_AMPLIFIER)
@@ -455,6 +456,7 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntityLaserTractorBeam> LASER_TRACTOR_BEAM = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.LASER_TRACTOR_BEAM, MekanismLang.DESCRIPTION_LASER_TRACTOR_BEAM)
           .withGui(() -> MekanismContainerTypes.LASER_TRACTOR_BEAM)
+          .withEnergyStorage(MekanismConfig.storage.laserTractorBeam)
           .with(AttributeUpgradeSupport.XP_CONTAINMENT_ONLY)
           .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), Attributes.COMPARATOR, Attributes.SECURITY, Attributes.INVENTORY)
           .withCustomShape(BlockShapes.LASER_AMPLIFIER)

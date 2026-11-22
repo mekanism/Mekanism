@@ -439,12 +439,10 @@ Induction Matrix Multiblock (formed),getOutputItem,,Table (LargeResourceStack),,
 Induction Matrix Multiblock (formed),getTransferCap,,Number (long),,false,
 Induction Matrix Port,getMode,,boolean,,false,"true -> output, false -> input."
 Induction Matrix Port,setMode,output: boolean,,,false,"true -> output, false -> input"
-Industrial Turbine Multiblock (formed),decrementDumpingMode,,,,false,
 Industrial Turbine Multiblock (formed),getBlades,,Number (int),,false,
 Industrial Turbine Multiblock (formed),getCoils,,Number (int),,false,
 Industrial Turbine Multiblock (formed),getCondensers,,Number (int),,false,
 Industrial Turbine Multiblock (formed),getDispersers,,Number (int),,false,
-Industrial Turbine Multiblock (formed),getDumpingMode,,String (GasMode),,false,
 Industrial Turbine Multiblock (formed),getFlowRate,,Number (int),,false,
 Industrial Turbine Multiblock (formed),getLastSteamInputRate,,Number (long),,false,
 Industrial Turbine Multiblock (formed),getMaxFlowRate,,Number (int),,false,
@@ -456,8 +454,6 @@ Industrial Turbine Multiblock (formed),getSteamCapacity,,Number (long),,false,Ge
 Industrial Turbine Multiblock (formed),getSteamFilledPercentage,,Number (double),,false,Get the filled percentage of the steam tank.
 Industrial Turbine Multiblock (formed),getSteamNeeded,,Number (long),,false,Get the amount needed to fill the steam tank.
 Industrial Turbine Multiblock (formed),getVents,,Number (int),,false,
-Industrial Turbine Multiblock (formed),incrementDumpingMode,,,,false,
-Industrial Turbine Multiblock (formed),setDumpingMode,mode: String (GasMode),,,false,
 Isotopic Centrifuge,getEnergyItem,,Table (LargeResourceStack),,false,Get the contents of the energy slot.
 Isotopic Centrifuge,getInput,,Table (LargeResourceStack),,false,Get the contents of the input tank.
 Isotopic Centrifuge,getInputCapacity,,Number (long),,false,Get the capacity of the input tank.

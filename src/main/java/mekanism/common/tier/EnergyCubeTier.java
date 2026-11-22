@@ -25,10 +25,10 @@ import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
 
 public enum EnergyCubeTier implements IStorageTier, TooltipProvider {
-    BASIC(BaseTier.BASIC, 4_000_000L, 4_000),
-    ADVANCED(BaseTier.ADVANCED, 16_000_000L, 16_000),
-    ELITE(BaseTier.ELITE, 64_000_000L, 64_000),
-    ULTIMATE(BaseTier.ULTIMATE, 256_000_000L, 256_000),
+    BASIC(BaseTier.BASIC, 5_000),
+    ADVANCED(BaseTier.ADVANCED, 10_000),
+    ELITE(BaseTier.ELITE, 25_000),
+    ULTIMATE(BaseTier.ULTIMATE, 75_000, Integer.MAX_VALUE),//No transfer limit by default
     CREATIVE(BaseTier.CREATIVE, Long.MAX_VALUE, Integer.MAX_VALUE);
 
     /// Cached value of [EnergyCubeTier#values()].
@@ -46,6 +46,10 @@ public enum EnergyCubeTier implements IStorageTier, TooltipProvider {
     private CachedLongValue capacityReference;
     @Nullable
     private CachedIntValue transferRateReference;
+
+    EnergyCubeTier(BaseTier tier, int capacity) {
+        this(tier, capacity, capacity / 10);
+    }
 
     EnergyCubeTier(BaseTier tier, long capacity, int transferRate) {
         this.serializedName = name().toLowerCase(Locale.ROOT);

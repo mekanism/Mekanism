@@ -12,6 +12,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntFunction;
+import java.util.function.IntSupplier;
 import mekanism.api.IDisableableEnum;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.MathUtils;
@@ -65,7 +66,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
@@ -127,63 +127,74 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
 
     @Override
     public float getDestroySpeed(ItemStack stack, BlockState state) {
+        DisassemblerMode mode = getMode(stack);
+        if (mode == DisassemblerMode.OFF) {
+            //No-op when off
+            return 0;
+        }
         EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(ItemAccessUtils.sideEffectFreeAccess(stack, 1)));
         if (energyHandler == null) {
             return 0;
         }
+        //Use raw hardness to get the best guess of if it is zero or not
+        int energyRequired = getDestroyEnergy(mode.getEnergyUsage(), state.destroySpeed);
         //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
         try (Transaction simulation = TransactionHelper.openTransactionSafe()) {
-            //Use raw hardness to get the best guess of if it is zero or not
-            int energyRequired = getDestroyEnergy(stack, state.destroySpeed);
             int energyAvailable = energyHandler.extract(energyRequired, simulation);
             if (energyAvailable < energyRequired) {
-                //If we can't extract all the energy we need to break it go at base speed reduced by how much we actually have available
-                return DisassemblerMode.NORMAL.getEfficiency() * ((float) energyAvailable / energyRequired);
+                //If we can't extract all the energy we need to break it go at base speed for the mode reduced by how much energy we actually have available
+                return mode.getEfficiency() * ((float) energyAvailable / energyRequired);
             }
         }
-        return getMode(stack).getEfficiency();
+        return mode.getEfficiency();
     }
 
     @Override
     public boolean mineBlock(ItemStack stack, Level world, BlockState state, BlockPos pos, LivingEntity entity) {
+        DisassemblerMode mode = getMode(stack);
+        if (mode == DisassemblerMode.OFF) {
+            //Don't allow mining
+            return false;
+        }
         EnergyHandler energyHandler = AutomatedEnergyHandler.manual(Capabilities.ENERGY.getCapability(ItemAccess.forStack(stack)));
-        if (energyHandler != null) {
-            int baseDestroyEnergy = getDestroyEnergy(stack);
-            int energyRequired = getDestroyEnergy(baseDestroyEnergy, state.getDestroySpeed(world, pos));
-            //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
-            try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
+        if (energyHandler == null) {
+            //Something went wrong, don't allow mining
+            return false;
+        } else if (world.isClientSide()) {
+            return true;
+        }
+        int baseDestroyEnergy = mode.getEnergyUsage();
+        int energyRequired = getDestroyEnergy(baseDestroyEnergy, state.getDestroySpeed(world, pos));
+        //Protect against any mods that might be doing transactional logic, such as if an auto clicker validates it has enough energy before calling this method
+        try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
+            if (mode != DisassemblerMode.SLOW || world.getRandom().nextDouble() < MekanismConfig.gear.disassemblerSlowEnergyChance.get()) {
+                //When on slow mode, only require it some of the time
                 energyHandler.extract(energyRequired, transaction);
-                //Vein mining handling
-                if (!world.isClientSide() && entity instanceof ServerPlayer player && MekanismUtils.isPlayingMode(player) && getMode(stack) == DisassemblerMode.VEIN) {
-                    boolean hasEnergyToVeinMine;
-                    try (Transaction simulation = Transaction.open(transaction)) {
-                        hasEnergyToVeinMine = energyHandler.extract(energyRequired, simulation) == energyRequired;
-                    }
-                    // Only allow mining things that are considered an ore
-                    if (hasEnergyToVeinMine && ModuleVeinMiningUnit.canVeinBlock(state) && state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
-                        Object2IntMap<BlockPos> found = ModuleVeinMiningUnit.findPositions(world, Map.of(pos, state), 0,
-                              Reference2BooleanMaps.singleton(state.getBlock(), true));
-                        MekanismUtils.veinMineArea(energyHandler, 0, baseDestroyEnergy, (ServerLevel) world, pos, player, stack, this, found, transaction,
-                              (_, _) -> 0,
-                              (base, hardness, distance, _) -> Mth.ceil(getDestroyEnergy(base, hardness) * (0.5 * Math.pow(distance, 1.5))));
-                    }
-                }
-                transaction.commit();
             }
+            //Vein mining handling
+            if (entity instanceof ServerPlayer player && MekanismUtils.isPlayingMode(player) && mode == DisassemblerMode.VEIN) {
+                boolean hasEnergyToVeinMine;
+                try (Transaction simulation = Transaction.open(transaction)) {
+                    hasEnergyToVeinMine = energyHandler.extract(energyRequired, simulation) == energyRequired;
+                }
+                // Only allow mining things that are considered an ore
+                if (hasEnergyToVeinMine && ModuleVeinMiningUnit.canVeinBlock(state) && state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
+                    Object2IntMap<BlockPos> found = ModuleVeinMiningUnit.findPositions(world, Map.of(pos, state), 0,
+                          Reference2BooleanMaps.singleton(state.getBlock(), true));
+                    //Note: Because vein mining is always on "normal" mode we don't need to check if it is on slow and then reduce the energy chance sometimes
+                    // and can just pass that the energy is always used
+                    MekanismUtils.veinMineArea(energyHandler, baseDestroyEnergy, 0, 1, (ServerLevel) world, pos, player, stack, this, found, transaction,
+                          (_, _) -> 0,
+                          (base, hardness, distance, _) -> Mth.ceil(getDestroyEnergy(base, hardness) * (0.5 * Math.pow(distance, 1.5))));
+                }
+            }
+            transaction.commit();
         }
         return true;
     }
 
-    private int getDestroyEnergy(ItemInstance itemStack, float hardness) {
-        return getDestroyEnergy(getDestroyEnergy(itemStack), hardness);
-    }
-
     private static int getDestroyEnergy(int baseDestroyEnergy, float hardness) {
         return hardness == 0 ? Math.max(baseDestroyEnergy / 2, 1) : baseDestroyEnergy;
-    }
-
-    private int getDestroyEnergy(ItemInstance itemStack) {
-        return MathUtils.multiplyClamped(MekanismConfig.gear.disassemblerEnergyUsage.get(), getMode(itemStack).getEfficiency());
     }
 
     @Override
@@ -248,12 +259,12 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     }
 
     public enum DisassemblerMode implements IDisableableEnum<DisassemblerMode>, IHasEnumNameTextComponent, IRadialMode, StringRepresentable, TooltipProvider {
-        NORMAL(MekanismLang.RADIAL_EXCAVATION_SPEED_NORMAL, 20, ConstantPredicates.ALWAYS_TRUE, EnumColor.BRIGHT_GREEN, ExcavationMode.NORMAL.icon()),
-        SLOW(MekanismLang.RADIAL_EXCAVATION_SPEED_SLOW, 8, MekanismConfig.gear.disassemblerSlowMode, EnumColor.PINK, ExcavationMode.SLOW.icon()),
+        NORMAL(MekanismLang.RADIAL_EXCAVATION_SPEED_NORMAL, 20, ConstantPredicates.ALWAYS_TRUE, MekanismConfig.gear.disassemblerEnergyUsage, EnumColor.BRIGHT_GREEN, ExcavationMode.NORMAL.icon()),
+        SLOW(MekanismLang.RADIAL_EXCAVATION_SPEED_SLOW, 8, MekanismConfig.gear.disassemblerSlowMode, MekanismConfig.gear.disassemblerEnergyUsage, EnumColor.PINK, ExcavationMode.SLOW.icon()),
         //Note: Uses extreme icon as both are efficiency 128
-        FAST(MekanismLang.RADIAL_EXCAVATION_SPEED_FAST, 128, MekanismConfig.gear.disassemblerFastMode, EnumColor.RED, ExcavationMode.EXTREME.icon()),
-        VEIN(MekanismLang.RADIAL_VEIN_NORMAL, 20, MekanismConfig.gear.disassemblerVeinMining, EnumColor.AQUA, Mekanism.rl("radial/vein_normal")),
-        OFF(MekanismLang.RADIAL_EXCAVATION_SPEED_OFF, 0, ConstantPredicates.ALWAYS_TRUE, EnumColor.WHITE, ExcavationMode.OFF.icon());
+        FAST(MekanismLang.RADIAL_EXCAVATION_SPEED_FAST, 128, MekanismConfig.gear.disassemblerFastMode, MekanismConfig.gear.disassemblerFastEnergyUsage, EnumColor.RED, ExcavationMode.EXTREME.icon()),
+        VEIN(MekanismLang.RADIAL_VEIN_NORMAL, 20, MekanismConfig.gear.disassemblerVeinMining, MekanismConfig.gear.disassemblerEnergyUsage, EnumColor.AQUA, Mekanism.rl("radial/vein_normal")),
+        OFF(MekanismLang.RADIAL_EXCAVATION_SPEED_OFF, 0, ConstantPredicates.ALWAYS_TRUE, ConstantPredicates.ZERO, EnumColor.WHITE, ExcavationMode.OFF.icon());
 
         @Unmodifiable
         public static final List<DisassemblerMode> VALUES = List.of(values());
@@ -266,16 +277,18 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
 
         private final String serializedName;
         private final BooleanSupplier checkEnabled;
+        private final IntSupplier energyUsage;
         private final ILangEntry langEntry;
         private final int efficiency;
         private final EnumColor color;
         private final Identifier icon;
 
-        DisassemblerMode(ILangEntry langEntry, int efficiency, BooleanSupplier checkEnabled, EnumColor color, Identifier icon) {
+        DisassemblerMode(ILangEntry langEntry, int efficiency, BooleanSupplier checkEnabled, IntSupplier energyUsage, EnumColor color, Identifier icon) {
             this.serializedName = name().toLowerCase(Locale.ROOT);
             this.langEntry = langEntry;
             this.efficiency = efficiency;
             this.checkEnabled = checkEnabled;
+            this.energyUsage = energyUsage;
             this.color = color;
             this.icon = icon;
         }
@@ -302,6 +315,10 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
 
         public int getEfficiency() {
             return efficiency;
+        }
+
+        public int getEnergyUsage() {
+            return energyUsage.getAsInt();
         }
 
         @Override

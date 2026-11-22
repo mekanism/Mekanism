@@ -315,7 +315,7 @@ public class CommonPlayerTickHandler {
             IModule<ModuleHydraulicPropulsionUnit> propulsionModule = IModuleHelper.INSTANCE.getIfEnabled(boots.getResource(), MekanismModules.HYDRAULIC_PROPULSION_UNIT);
             if (propulsionModule != null && Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
                 float boost = propulsionModule.getCustomInstance().getBoost();
-                int usage = Mth.ceil(MekanismConfig.gear.mekaSuitBaseJumpEnergyUsage.get() * boost / 0.1F);
+                int usage = Mth.ceil(MekanismConfig.gear.mekaSuitBaseJumpEnergyUsage.get() * 10 * boost);
                 //Protect against any mods that might be doing transactional logic around an entity jumping. Most likely this will never be necessary
                 try (Transaction transaction = TransactionHelper.openTransactionSafe()) {
                     if (propulsionModule.useAllEnergy(player, boots, usage, transaction)) {
