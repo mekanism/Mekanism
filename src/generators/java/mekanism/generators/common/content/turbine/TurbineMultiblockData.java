@@ -130,14 +130,13 @@ public class TurbineMultiblockData extends MultiblockData {
 
         lastSteamInput = steamInputJournal.getSteamInputAndReset();
         long stored = chemicalTank.amountAsLong();
-        double flowRate = 0;
+        double flowRatio = 0;//0-1 percent of flow rate / max flow
         int flow = 0;
         if (stored > 0) {
             try (Transaction transaction = Transaction.openRoot()) {
-                double proportion = stored / (double) chemicalTank.capacityAsLong(chemicalTank.resource());
-                double origRate = getMaxFlowRateDouble();
-                double availableRate = Math.min(stored, origRate);
-                double rate = availableRate * proportion;
+                double steamFilledRatio = stored / (double) chemicalTank.capacityAsLong(chemicalTank.resource());
+                double maxFlowRate = getMaxFlowRateDouble();
+                double rate = Math.min(stored, maxFlowRate) * steamFilledRatio;
                 if (rate >= 1) {
                     flow = MathUtils.clampToInt(rate);
                     if (chemicalTank.extract(chemicalTank.resource(), flow, transaction, AutomationType.INTERNAL) == flow) {
@@ -146,7 +145,7 @@ public class TurbineMultiblockData extends MultiblockData {
                             //Insert energy allowing any excess to be voided/discharged into the world
                             energyContainer.insert(energyProduced, transaction, AutomationType.INTERNAL);
                         }
-                        flowRate = rate / origRate;
+                        flowRatio = rate / maxFlowRate;
                         int waterProduced = Math.min(flow, getMaxWaterOutput());
                         if (ventTank.insert(FluidResource.of(Fluids.WATER), waterProduced, transaction, AutomationType.INTERNAL) == waterProduced) {
                             //This should always return true
@@ -166,7 +165,7 @@ public class TurbineMultiblockData extends MultiblockData {
         }
         EnergyUtils.emit(energyOutputTargets, energyContainer, null);
 
-        float newRotation = (float) flowRate;
+        float newRotation = (float) flowRatio;
 
         if (Math.abs(newRotation - clientRotation) > ROTATION_THRESHOLD) {
             clientRotation = newRotation;
