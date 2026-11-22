@@ -115,7 +115,7 @@ public class MekanismItems {
     // QIO Drives
     public static final ItemRegistryObject<Item> BASE_QIO_DRIVE = registerQIODrive("base", BaseTier.BASIC, 16_000, 128);
     public static final ItemRegistryObject<Item> HYPER_DENSE_QIO_DRIVE = registerQIODrive("hyper_dense", BaseTier.ADVANCED, 128_000, 256);
-    public static final ItemRegistryObject<Item> TIME_DILATING_QIO_DRIVE = registerQIODrive("time_dilating", BaseTier.ELITE, 1_048_000, 1_024);
+    public static final ItemRegistryObject<Item> TIME_DILATING_QIO_DRIVE = registerQIODrive("time_dilating", BaseTier.ELITE, 1_024_000, 1_024);
     public static final ItemRegistryObject<Item> SUPERMASSIVE_QIO_DRIVE = registerQIODrive("supermassive", BaseTier.ULTIMATE, 16_000_000_000L, 8_192);
 
     public static final ItemRegistryObject<ItemHazmatSuitArmor> HAZMAT_MASK = ITEMS.registerItem("hazmat_mask", props -> new ItemHazmatSuitArmor(ArmorType.HELMET, props));
