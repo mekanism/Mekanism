@@ -115,6 +115,12 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
                 int maxLevelHeight = Math.min(level.getMaxY() + 1, minBuildHeight + level.dimensionType().logicalHeight()) - 1;
                 int minY = Math.max(MekanismGeneratorsConfig.generators.windGenerationMinY.get(), minBuildHeight);
                 int maxY = Math.min(MekanismGeneratorsConfig.generators.windGenerationMaxY.get(), maxLevelHeight);
+                if (maxY <= minY) {
+                    //If the min y is at or above the logical top of the world, there is no height range to scale the generation across,
+                    // so act as if we are at the min y. This also keeps Math.clamp from throwing when min > max, and the slope from being infinite
+                    // when they are equal
+                    return 1;
+                }
                 int clampedY = Math.clamp(top.getY(), minY, maxY);
                 long minG = MekanismGeneratorsConfig.generators.windGenerationMin.get();
                 long maxG = MekanismGeneratorsConfig.generators.windGenerationMax.get();
