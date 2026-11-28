@@ -19,7 +19,9 @@ public interface ITileRadioactive {
                 if (!resource.isEmpty() && resource.isRadioactive(registryAccess)) {
                     //TODO: Eventually we may want to debate doing this based on the radioactivity
                     // but for now this will work well
-                    summedScale += tank.amountAsLong() / (float) tank.capacityAsLong(resource);
+                    //Note: We use divideToLevel so that if the tank's capacity for the resource is zero (such as when a radioactive chemical
+                    // is no longer valid for the tank due to config or datapack changes), we treat it as full instead of dividing by zero
+                    summedScale += (float) MathUtils.divideToLevel(tank.amountAsLong(), tank.capacityAsLong(resource));
                 }
             }
             return summedScale / tanks.size();
